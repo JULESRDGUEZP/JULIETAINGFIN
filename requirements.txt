@@ -1,11 +1,11 @@
 streamlit
-yfinance
+yfinance>=0.2.36
 altair
 pandas
 google-generativeai
 numpy
 matplotlib
-plotly
 requests
 beautifulsoup4
 python-dotenv
+plotly
