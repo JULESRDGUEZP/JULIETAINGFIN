@@ -1,10 +1,10 @@
-streamlit>=1.31.1
+streamlit
 streamlit-extras
-yfinance>=0.2.36
-pandas>=2.2.2
-numpy>=1.26.4
-altair>=5.2.0
-plotly>=5.20.0
+yfinance
+pandas
+numpy
+altair
+plotly
 google-generativeai
 matplotlib
 requests
