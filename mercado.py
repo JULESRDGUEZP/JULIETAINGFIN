@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 from datetime import datetime, timedelta
+import plotly.express as px
 
 
 def obtener_datos(tickers, start):
@@ -45,21 +46,31 @@ def mostrar_panorama():
     def calcular_tabla(tickers: dict, nombre_col: str):
         df = obtener_datos(tickers, fecha_inicio)
         if df.empty:
-            return pd.DataFrame(columns=[nombre_col, "Variación %"])
+            return pd.DataFrame(columns=[nombre_col, "Variación %"]), df
         variacion = ((df.iloc[-1] / df.iloc[0]) - 1) * 100
-        return pd.DataFrame({nombre_col: variacion.index, "Variación %": variacion.values}).sort_values("Variación %", ascending=False)
+        tabla = pd.DataFrame({nombre_col: variacion.index, "Variación %": variacion.values}).sort_values("Variación %", ascending=False)
+        return tabla, variacion
 
     with st.expander("📊 Tabla Comparativa de Índices", expanded=True):
-        tabla_indices = calcular_tabla(indices, "Índice")
+        tabla_indices, variacion_indices = calcular_tabla(indices, "Índice")
         st.dataframe(tabla_indices.style.format({"Variación %": "{:.2f}"}))
+        if not variacion_indices.empty:
+            fig = px.bar(tabla_indices, x="Índice", y="Variación %", color="Índice", title="Variación Anual de Índices")
+            st.plotly_chart(fig, use_container_width=True)
 
     with st.expander("🛢️ Tabla Comparativa de Commodities"):
-        tabla_commodities = calcular_tabla(commodities, "Commodity")
+        tabla_commodities, variacion_commodities = calcular_tabla(commodities, "Commodity")
         st.dataframe(tabla_commodities.style.format({"Variación %": "{:.2f}"}))
+        if not variacion_commodities.empty:
+            fig = px.bar(tabla_commodities, x="Commodity", y="Variación %", color="Commodity", title="Variación Anual de Commodities")
+            st.plotly_chart(fig, use_container_width=True)
 
     with st.expander("💱 Tabla Comparativa de Divisas"):
-        tabla_divisas = calcular_tabla(divisas, "Divisa")
+        tabla_divisas, variacion_divisas = calcular_tabla(divisas, "Divisa")
         st.dataframe(tabla_divisas.style.format({"Variación %": "{:.2f}"}))
+        if not variacion_divisas.empty:
+            fig = px.bar(tabla_divisas, x="Divisa", y="Variación %", color="Divisa", title="Variación Anual de Divisas")
+            st.plotly_chart(fig, use_container_width=True)
 
     with st.expander("🏆 Ranking de Ganadores y Perdedores"):
         all_assets = {**indices, **commodities, **divisas}
