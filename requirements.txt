@@ -13,3 +13,6 @@ python-dotenv
 scikit-learn
 seaborn
 pillow
+finnhub-python
+ta
+streamlit-option-menu
